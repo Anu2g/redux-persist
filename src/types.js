@@ -16,6 +16,7 @@ export type PersistConfig = {
   keyPrefix?: string, // @TODO remove in v6
   blacklist?: Array<string>,
   whitelist?: Array<string>,
+  largeObjects?: Array<string>,
   transforms?: Array<Transform>,
   throttle?: number,
   migrate?: (PersistedState, number) => Promise<PersistedState>,

@@ -2,6 +2,7 @@
 
 export const KEY_PREFIX = 'persist:'
 export const FLUSH = 'persist/FLUSH'
+export const FLUSH_LARGE_OBJECTS = 'persist/FLUSH_LARGE_OBJECTS'
 export const REHYDRATE = 'persist/REHYDRATE'
 export const PAUSE = 'persist/PAUSE'
 export const PERSIST = 'persist/PERSIST'
