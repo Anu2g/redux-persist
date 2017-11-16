@@ -27,7 +27,7 @@ export default function createPersistoid(config) {
       if (!passWhitelistBlacklist(key)) return; // is keyspace ignored? noop
       if (lastState[key] === state[key]) return; // value unchanged? noop
       if (keysToProcess.indexOf(key) !== -1) return; // is key already queued? noop
-      if (largeObjects.indexOf(key) && !includeLargeObjects) return;
+      if (largeObjects.indexOf(key) !== -1 && !includeLargeObjects) return;
       keysToProcess.push(key); // add key to queue
     });
 
