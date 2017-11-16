@@ -49,12 +49,12 @@
     "babel-preset-env": "^1.5.2",
     "babel-preset-flow": "^6.23.0",
     "babel-register": "^6.24.1",
-    "cross-env": "^5.0.1",
+    "cross-env": "^5.1.1",
     "eslint": "^4.8.0",
     "eslint-plugin-flowtype": "^2.30.4",
     "eslint-plugin-import": "^2.2.0",
     "flow-bin": "^0.59.0",
-    "flow-copy-source": "^1.1.0",
+    "flow-copy-source": "^1.2.1",
     "husky": "^0.13.3",
     "lint-staged": "^3.4.0",
     "lodash": "^4.17.4",
@@ -67,5 +67,7 @@
   "peerDependencies": {
     "redux": ">3.0.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "flow-copy": "^0.1.2"
+  }
 }

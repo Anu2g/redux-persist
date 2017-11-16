@@ -11,9 +11,9 @@ export default function createPersistoid(config: PersistConfig): Persistoid {
   const largeObjects: ?Array<string> = config.largeObjects || null
   const transforms = config.transforms || []
   const throttle = config.throttle || 0
-  const storageKey = `${config.keyPrefix !== undefined
-    ? config.keyPrefix
-    : KEY_PREFIX}${config.key}`
+  const storageKey = `${
+    config.keyPrefix !== undefined ? config.keyPrefix : KEY_PREFIX
+  }${config.key}`
 
   const storage = config.storage
 
@@ -31,7 +31,7 @@ export default function createPersistoid(config: PersistConfig): Persistoid {
       if (!passWhitelistBlacklist(key)) return // is keyspace ignored? noop
       if (lastState[key] === state[key]) return // value unchanged? noop
       if (keysToProcess.indexOf(key) !== -1) return // is key already queued? noop
-      if (largeObjects.indexOf(key) && !includeLargeObjects) return;
+      if (largeObjects.indexOf(key) !== -1 && !includeLargeObjects) return
       keysToProcess.push(key) // add key to queue
     })
 
