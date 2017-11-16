@@ -40,6 +40,7 @@ export default function createPersistor (store, config) {
       if (!passWhitelistBlacklist(key)) return
       if (stateGetter(lastState, key) === stateGetter(state, key)) return
       if (storesToProcess.indexOf(key) !== -1) return
+      if (["entities"].indexOf(key) !== -1) return
       storesToProcess.push(key)
     })
 
@@ -98,7 +99,15 @@ export default function createPersistor (store, config) {
     rehydrate: adhocRehydrate,
     pause: () => { paused = true },
     resume: () => { paused = false },
-    purge: (keys) => purgeStoredState({storage, keyPrefix}, keys)
+    purge: (keys) => purgeStoredState({storage, keyPrefix}, keys),
+    flushBigObjects: () => {
+      var key = "entities";
+      var storageKey = createStorageKey(key);
+      var endState = transforms.reduce(function (subState, transformer) {
+        return transformer.in(subState, key);
+      }, stateGetter(store.getState(), key));
+      if (typeof endState !== 'undefined') storage.setItem(storageKey, serializer(endState), warnIfSetError(key));
+    },
   }
 }
 
