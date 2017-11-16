@@ -23,13 +23,14 @@ export default function createPersistoid(config: PersistConfig): Persistoid {
   let timeIterator: ?number = null
   let writePromise = null
 
-  const update = (state: Object) => {
+  const update = (state: Object, includeLargeObjects = false) => {
     // add any changed keys to the queue
     Object.keys(state).forEach(key => {
       let subState = state[key]
       if (!passWhitelistBlacklist(key)) return // is keyspace ignored? noop
       if (lastState[key] === state[key]) return // value unchanged? noop
       if (keysToProcess.indexOf(key) !== -1) return // is key already queued? noop
+      if (key === "entities" && !includeLargeObjects) return;
       keysToProcess.push(key) // add key to queue
     })
 

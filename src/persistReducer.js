@@ -1,6 +1,7 @@
 // @flow
 import {
   FLUSH,
+  FLUSH_LARGE_OBJECTS,
   PAUSE,
   PERSIST,
   PURGE,
@@ -149,7 +150,7 @@ export default function persistReducer<State: Object, Action: Object>(
     _persist.rehydrated &&
       _persistoid &&
       !_paused &&
-      _persistoid.update(newState)
+      _persistoid.update(newState, action.type === FLUSH_LARGE_OBJECTS)
     return newState
   }
 }
