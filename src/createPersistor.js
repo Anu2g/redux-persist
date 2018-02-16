@@ -1,4 +1,4 @@
-import { KEY_PREFIX, REHYDRATE } from './constants'
+import { KEY_PREFIX, REHYDRATE, ENTITY_KEYS } from './constants'
 import createAsyncLocalStorage from './defaults/asyncLocalStorage'
 import purgeStoredState from './purgeStoredState'
 import stringify from 'json-stringify-safe'
@@ -40,7 +40,7 @@ export default function createPersistor (store, config) {
       if (!passWhitelistBlacklist(key)) return
       if (stateGetter(lastState, key) === stateGetter(state, key)) return
       if (storesToProcess.indexOf(key) !== -1) return
-      if (["entities"].indexOf(key) !== -1) return
+      if (ENTITY_KEYS.indexOf(key) !== -1) return
       storesToProcess.push(key)
     })
 
@@ -101,12 +101,14 @@ export default function createPersistor (store, config) {
     resume: () => { paused = false },
     purge: (keys) => purgeStoredState({storage, keyPrefix}, keys),
     flushBigObjects: () => {
-      var key = "entities";
-      var storageKey = createStorageKey(key);
-      var endState = transforms.reduce(function (subState, transformer) {
-        return transformer.in(subState, key);
-      }, stateGetter(store.getState(), key));
-      if (typeof endState !== 'undefined') storage.setItem(storageKey, serializer(endState), warnIfSetError(key));
+      for (i = 0; i < ENTITY_KEYS.length; i++) {
+        var key = ENTITY_KEYS[i];
+        var storageKey = createStorageKey(key);
+        var endState = transforms.reduce(function (subState, transformer) {
+          return transformer.in(subState, key);
+        }, stateGetter(store.getState(), key));
+        if (typeof endState !== 'undefined') storage.setItem(storageKey, serializer(endState), warnIfSetError(key));
+      }
     },
   }
 }
