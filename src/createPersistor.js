@@ -101,6 +101,7 @@ export default function createPersistor (store, config) {
     resume: () => { paused = false },
     purge: (keys) => purgeStoredState({storage, keyPrefix}, keys),
     flushBigObjects: () => {
+      var i;
       for (i = 0; i < ENTITY_KEYS.length; i++) {
         var key = ENTITY_KEYS[i];
         var storageKey = createStorageKey(key);
