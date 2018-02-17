@@ -185,7 +185,7 @@ function createPersistor(store, config) {
       if (!passWhitelistBlacklist(key)) return;
       if (stateGetter(lastState, key) === stateGetter(state, key)) return;
       if (storesToProcess.indexOf(key) !== -1) return;
-      if (["entities"].indexOf(key) !== -1) return;
+      if (_constants.ENTITY_KEYS.indexOf(key) !== -1) return;
       storesToProcess.push(key);
     });
 
@@ -256,12 +256,14 @@ function createPersistor(store, config) {
       return (0, _purgeStoredState2.default)({ storage: storage, keyPrefix: keyPrefix }, keys);
     },
     flushBigObjects: function flushBigObjects() {
-      var key = "entities";
-      var storageKey = createStorageKey(key);
-      var endState = transforms.reduce(function (subState, transformer) {
-        return transformer.in(subState, key);
-      }, stateGetter(store.getState(), key));
-      if (typeof endState !== 'undefined') storage.setItem(storageKey, serializer(endState), warnIfSetError(key));
+			for (i = 0; i < _constants.ENTITY_KEYS; i ++) {
+				var key = _constants.ENTITY_KEYS[i];
+				var storageKey = createStorageKey(key);
+				var endState = transforms.reduce(function (subState, transformer) {
+					return transformer.in(subState, key);
+				}, stateGetter(store.getState(), key));
+				if (typeof endState !== 'undefined') storage.setItem(storageKey, serializer(endState), warnIfSetError(key));
+			}
     }
   };
 }
