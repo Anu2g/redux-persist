@@ -1,4 +1,4 @@
-import { KEY_PREFIX, REHYDRATE, ENTITY_KEYS } from './constants'
+import { KEY_PREFIX, REHYDRATE } from './constants'
 import createAsyncLocalStorage from './defaults/asyncLocalStorage'
 import purgeStoredState from './purgeStoredState'
 import stringify from 'json-stringify-safe'
@@ -31,6 +31,9 @@ export default function createPersistor (store, config) {
   let storesToProcess = []
   let timeIterator = null
 
+  // Get entity keys
+  const DEFAULT_ENTITY_KEYS = config.defaultEntityKeys
+
   store.subscribe(() => {
     if (paused) return
 
@@ -40,7 +43,7 @@ export default function createPersistor (store, config) {
       if (!passWhitelistBlacklist(key)) return
       if (stateGetter(lastState, key) === stateGetter(state, key)) return
       if (storesToProcess.indexOf(key) !== -1) return
-      if (ENTITY_KEYS.indexOf(key) !== -1) return
+      if (DEFAULT_ENTITY_KEYS.indexOf(key) !== -1) return
       storesToProcess.push(key)
     })
 
@@ -100,10 +103,16 @@ export default function createPersistor (store, config) {
     pause: () => { paused = true },
     resume: () => { paused = false },
     purge: (keys) => purgeStoredState({storage, keyPrefix}, keys),
-    flushBigObjects: () => {
+    flushObjects: (keys) => {
+      var entityKeys;
+      if (keys) {
+        entityKeys = keys;
+      } else {
+        entityKeys = DEFAULT_ENTITY_KEYS;
+      }
       var i;
-      for (i = 0; i < ENTITY_KEYS.length; i++) {
-        var key = ENTITY_KEYS[i];
+      for (i = 0; i < entityKeys.length; i++) {
+        var key = entityKeys[i];
         var storageKey = createStorageKey(key);
         var endState = transforms.reduce(function (subState, transformer) {
           return transformer.in(subState, key);
