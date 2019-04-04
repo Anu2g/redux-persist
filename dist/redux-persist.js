@@ -176,6 +176,9 @@ function createPersistor(store, config) {
   var storesToProcess = [];
   var timeIterator = null;
 
+  // Get entity keys
+  var DEFAULT_ENTITY_KEYS = config.defaultEntityKeys
+
   store.subscribe(function () {
     if (paused) return;
 
@@ -185,7 +188,7 @@ function createPersistor(store, config) {
       if (!passWhitelistBlacklist(key)) return;
       if (stateGetter(lastState, key) === stateGetter(state, key)) return;
       if (storesToProcess.indexOf(key) !== -1) return;
-      if (_constants.ENTITY_KEYS.indexOf(key) !== -1) return;
+      if (DEFAULT_ENTITY_KEYS.indexOf(key) !== -1) return;
       storesToProcess.push(key);
     });
 
@@ -255,9 +258,16 @@ function createPersistor(store, config) {
     purge: function purge(keys) {
       return (0, _purgeStoredState2.default)({ storage: storage, keyPrefix: keyPrefix }, keys);
     },
-    flushBigObjects: function flushBigObjects() {
-			for (i = 0; i < _constants.ENTITY_KEYS; i ++) {
-				var key = _constants.ENTITY_KEYS[i];
+    flushObjects: function flushObjects() {
+      var entityKeys;
+      if (keys) {
+        entityKeys = keys;
+      } else {
+        entityKeys = DEFAULT_ENTITY_KEYS;
+      }
+      var i;
+      for (i = 0; i < entityKeys; i ++) {
+        var key = entityKeys[i];
 				var storageKey = createStorageKey(key);
 				var endState = transforms.reduce(function (subState, transformer) {
 					return transformer.in(subState, key);
